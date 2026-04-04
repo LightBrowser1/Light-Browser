@@ -30,3 +30,6 @@ application experience and full support for modern web standards.
 This project is licensed under the GNU General Public License v3 (GPLv3). 
 This ensures that the software remains free and that any modifications 
 made by others must also be made public and shared under the same license.
+
+## DISCLAIMER:
+The project is still in developing
