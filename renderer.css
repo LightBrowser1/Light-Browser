@@ -1,0 +1,141 @@
+/* ── Tab spinner animation ── */
+@keyframes tabSpin { to { transform: rotate(360deg); } }
+
+.tab-spinner {
+    font-size: 12px;
+    color: var(--accent-red, #ff0033);
+    animation: tabSpin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+.tab-favicon {
+    font-size: 12px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.tab.active .tab-favicon {
+    color: #00d4ff;
+}
+
+/* ── Nav arrows (back / forward / reload) ── */
+.nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.nav-arrows .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.nav-arrows .icon-btn:hover {
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+}
+
+.nav-arrows .icon-btn:active {
+    transform: scale(0.88);
+}
+
+/* ── Engine indicator button ── */
+.engine-indicator-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 8px 0 0;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.search-bar:focus-within .engine-indicator-btn { color: var(--accent-red, #ff0033); }
+.engine-indicator-btn:hover { color: var(--accent-red, #ff0033) !important; }
+
+/* ── Engine picker dropdown ── */
+#engine-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 230px;
+    background: rgba(14, 14, 18, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 8px;
+    z-index: 9999;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    animation: menuPop 0.15s ease-out forwards;
+}
+
+@keyframes menuPop {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.engine-menu-header {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    padding: 6px 12px 10px;
+}
+
+.engine-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    transition: 0.15s;
+    user-select: none;
+}
+.engine-option:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.engine-option.active { background: rgba(255,0,51,0.1); color: #fff; border: 1px solid rgba(255,0,51,0.2); }
+.engine-option i:first-child { width: 18px; text-align: center; color: rgba(255,255,255,0.4); }
+.engine-option.active i:first-child { color: var(--accent-red, #ff0033); }
+.engine-option span { flex-grow: 1; }
+.engine-check { font-size: 11px; color: var(--accent-red, #ff0033) !important; }
+
+/* ── Loading bar at top of page ── */
+#loading-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(to right, var(--accent-red, #ff0033), #ff6b6b);
+    z-index: 99999;
+    transition: width 0.3s ease, opacity 0.4s ease;
+    box-shadow: 0 0 8px var(--accent-red, #ff0033);
+}
+#loading-bar.loading {
+    animation: loadPulse 1.5s ease-in-out infinite;
+}
+@keyframes loadPulse {
+    0%   { width: 10%; }
+    50%  { width: 70%; }
+    100% { width: 90%; }
+}
+#loading-bar.done {
+    width: 100% !important;
+    opacity: 0;
+}

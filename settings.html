@@ -1,0 +1,213 @@
+<!--
+/*
+File: settings.html
+Author: {amar_avda}
+Copyright (c) {2026} {amar_avda}
+Licensed under the GNU General Public License v3.0
+*/
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Light Browser - Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0c;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            height: 100vh;
+        }
+
+        .settings-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ---- Sidebar ---- */
+        .settings-sidebar {
+            width: 240px;
+            background: rgba(255,255,255,0.02);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 30px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 12px;
+        }
+
+        .sidebar-logo i { color: #00d4ff; font-size: 20px; }
+        .sidebar-logo span { font-size: 13px; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            color: #666;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .settings-nav-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .settings-nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: #ccc;
+        }
+
+        .settings-nav-item.active {
+            background: rgba(0, 212, 255, 0.08);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .settings-nav-item.active i { color: #00d4ff; }
+
+        /* Back button */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            color: #555;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: auto;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .back-btn:hover { color: #ff0033; background: rgba(255,0,51,0.05); }
+
+        /* ---- Content area ---- */
+        .settings-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background: #0a0a0c;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+
+        .settings-content::-webkit-scrollbar { width: 4px; }
+        .settings-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+        /* ---- Welcome screen ---- */
+        .welcome-pane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 16px;
+            opacity: 0.4;
+        }
+        .welcome-pane i { font-size: 48px; color: #00d4ff; }
+        .welcome-pane p { font-size: 14px; color: #888; }
+
+        /* ---- Loading indicator ---- */
+        .settings-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { animation: spin 0.8s linear infinite; }
+    </style>
+</head>
+<body>
+
+<div class="settings-container">
+
+    <aside class="settings-sidebar">
+        <div class="sidebar-logo">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <span>Settings</span>
+        </div>
+
+        <div class="settings-nav-item" data-page="appearance" onclick="loadSetting('appearance', this)">
+            <i class="fa-solid fa-palette"></i> Appearance
+        </div>
+        <div class="settings-nav-item" data-page="language" onclick="loadSetting('language', this)">
+            <i class="fa-solid fa-language"></i> Language
+        </div>
+        <div class="settings-nav-item" data-page="browser" onclick="loadSetting('browser', this)">
+            <i class="fa-solid fa-magnifying-glass"></i> Search Engine
+        </div>
+        <div class="settings-nav-item" data-page="dns" onclick="loadSetting('dns', this)">
+            <i class="fa-solid fa-server"></i> DNS
+        </div>
+        <div class="settings-nav-item" data-page="privacy" onclick="loadSetting('privacy', this)">
+            <i class="fa-solid fa-shield-halved"></i> Privacy & Security
+        </div>
+
+        <div class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i> Back to Browser
+        </div>
+    </aside>
+
+    <main class="settings-content" id="settings-display">
+        <div class="welcome-pane">
+            <i class="fa-solid fa-sliders"></i>
+            <p>Select a category to get started</p>
+        </div>
+    </main>
+
+</div>
+
+<script>
+    async function loadSetting(page, el) {
+        // Highlight active nav item
+        document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+        if (el) el.classList.add('active');
+
+        const display = document.getElementById('settings-display');
+        display.innerHTML = `<div class="settings-loading"><i class="fa-solid fa-circle-notch spinner"></i> Loading...</div>`;
+
+        try {
+            const response = await fetch(page + '.html');
+            if (response.ok) {
+                const html = await response.text();
+                display.innerHTML = html;
+                // Re-run any scripts inside loaded content
+                display.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.replaceWith(newScript);
+                });
+            } else {
+                display.innerHTML = `<div class="welcome-pane"><i class="fa-solid fa-triangle-exclamation" style="color:#ff4747"></i><p>${page}.html not found.</p></div>`;
+            }
+        } catch (err) {
+            display.innerHTML = `<div class="welcome-pane"><i class="fa-solid fa-triangle-exclamation" style="color:#ff4747"></i><p>Make sure you're using Live Server.</p></div>`;
+        }
+    }
+</script>
+</body>
+</html>

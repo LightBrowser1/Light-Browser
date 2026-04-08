@@ -1,0 +1,196 @@
+<!--
+/*
+File: browser.html
+Author: {amar_avda}
+Copyright (c) {2026} {amar_avda}
+Licensed under the GNU General Public License v3.0
+*/
+-->
+
+<style>
+.s-page { padding: 40px; max-width: 720px; }
+.s-title { font-size: 22px; font-weight: 300; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; }
+.s-title i { color: #00d4ff; }
+.s-sub { color: #555; font-size: 13px; margin-bottom: 36px; }
+.s-section-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 16px; }
+
+.engine-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+
+.engine-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    user-select: none;
+}
+.engine-row:hover { background: rgba(255,255,255,0.05); border-color: rgba(0,212,255,0.2); }
+.engine-row.selected { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.35); }
+
+.engine-icon { font-size: 18px; width: 28px; text-align: center; color: #555; }
+.engine-row.selected .engine-icon { color: #00d4ff; }
+
+.engine-info { flex-grow: 1; }
+.engine-info-name { font-size: 14px; color: #ccc; }
+.engine-row.selected .engine-info-name { color: #00d4ff; }
+.engine-info-url { font-size: 11px; color: #444; font-family: monospace; margin-top: 2px; }
+
+.engine-check { color: #00d4ff; font-size: 14px; opacity: 0; transition: 0.2s; }
+.engine-row.selected .engine-check { opacity: 1; }
+
+/* Custom engine form */
+.custom-form {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+}
+.custom-form-title { font-size: 13px; color: #888; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-row label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+.form-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+    transition: 0.2s;
+}
+.form-input:focus { border-color: rgba(0,212,255,0.4); background: rgba(255,255,255,0.06); }
+.form-input::placeholder { color: #333; }
+.add-btn {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.25);
+    color: #00d4ff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 8px;
+}
+.add-btn:hover { background: rgba(0,212,255,0.18); }
+
+.save-btn {
+    background: #00d4ff; color: #000; border: none;
+    padding: 13px 32px; border-radius: 10px;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    letter-spacing: 0.5px; transition: 0.2s;
+    display: flex; align-items: center; gap: 8px;
+}
+.save-btn:hover { background: #00b8e6; box-shadow: 0 4px 20px rgba(0,212,255,0.35); }
+.toast { margin-left: 16px; font-size: 13px; color: #00d4ff; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; gap: 6px; }
+.toast.show { opacity: 1; }
+.bottom-row { display: flex; align-items: center; }
+.delete-btn { background: none; border: none; color: #ff4747; cursor: pointer; font-size: 12px; padding: 4px; opacity: 0.5; transition: 0.2s; }
+.delete-btn:hover { opacity: 1; }
+</style>
+
+<div class="s-page">
+    <div class="s-title"><i class="fa-solid fa-magnifying-glass"></i> Search Engine</div>
+    <p class="s-sub">Choose your default search engine. Used in both the address bar and the dashboard.</p>
+
+    <div class="s-section-label">Default Search Engine</div>
+    <div class="engine-list" id="engine-list"></div>
+
+    <div class="s-section-label">Add Custom Engine</div>
+    <div class="custom-form">
+        <div class="custom-form-title"><i class="fa-solid fa-plus"></i> Add a new search engine</div>
+        <div class="form-row">
+            <label>Name</label>
+            <input class="form-input" id="custom-name" type="text" placeholder="e.g. Startpage">
+        </div>
+        <div class="form-row">
+            <label>Search URL (use %s for the query)</label>
+            <input class="form-input" id="custom-url" type="text" placeholder="e.g. https://www.startpage.com/search?q=%s">
+        </div>
+        <button class="add-btn" onclick="addCustomEngine()">
+            <i class="fa-solid fa-plus"></i> Add Engine
+        </button>
+    </div>
+
+    <div class="bottom-row">
+        <button class="save-btn" onclick="saveEngine()">
+            <i class="fa-solid fa-floppy-disk"></i> Save
+        </button>
+        <span class="toast" id="toast"><i class="fa-solid fa-check"></i> Search engine saved!</span>
+    </div>
+</div>
+
+<script>
+const BUILT_IN = [
+    { key: 'duckduckgo', name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=%s', icon: 'fa-solid fa-shield-dog', builtin: true },
+    { key: 'google',     name: 'Google',     url: 'https://www.google.com/search?q=%s', icon: 'fa-brands fa-google', builtin: true },
+    { key: 'bing',       name: 'Bing',       url: 'https://www.bing.com/search?q=%s', icon: 'fa-brands fa-microsoft', builtin: true },
+    { key: 'brave',      name: 'Brave Search', url: 'https://search.brave.com/search?q=%s', icon: 'fa-solid fa-shield-halved', builtin: true },
+    { key: 'ecosia',     name: 'Ecosia',     url: 'https://www.ecosia.org/search?q=%s', icon: 'fa-solid fa-leaf', builtin: true },
+    { key: 'startpage',  name: 'Startpage',  url: 'https://www.startpage.com/search?q=%s', icon: 'fa-solid fa-star', builtin: true },
+];
+
+let customEngines = JSON.parse(localStorage.getItem('lb-custom-engines') || '[]');
+let selectedKey = localStorage.getItem('searchEngine') || 'duckduckgo';
+
+function allEngines() {
+    return [...BUILT_IN, ...customEngines];
+}
+
+function renderEngines() {
+    const list = document.getElementById('engine-list');
+    list.innerHTML = allEngines().map(e => `
+        <div class="engine-row ${e.key === selectedKey ? 'selected' : ''}" onclick="selectEngine('${e.key}')">
+            <i class="engine-icon ${e.icon || 'fa-solid fa-magnifying-glass'}"></i>
+            <div class="engine-info">
+                <div class="engine-info-name">${e.name}</div>
+                <div class="engine-info-url">${e.url}</div>
+            </div>
+            ${!e.builtin ? `<button class="delete-btn" onclick="deleteCustom('${e.key}', event)" title="Remove"><i class="fa-solid fa-trash"></i></button>` : ''}
+            <i class="fa-solid fa-check engine-check"></i>
+        </div>
+    `).join('');
+}
+
+function selectEngine(key) {
+    selectedKey = key;
+    renderEngines();
+}
+
+function addCustomEngine() {
+    const name = document.getElementById('custom-name').value.trim();
+    const url  = document.getElementById('custom-url').value.trim();
+    if (!name || !url) { alert('Please fill in both fields.'); return; }
+
+    const key = 'custom_' + Date.now();
+    // Convert %s format to internal format
+    const finalUrl = url.includes('%s') ? url.replace('%s', '') : url;
+    customEngines.push({ key, name, url: url, icon: 'fa-solid fa-magnifying-glass', builtin: false });
+    localStorage.setItem('lb-custom-engines', JSON.stringify(customEngines));
+
+    document.getElementById('custom-name').value = '';
+    document.getElementById('custom-url').value = '';
+    renderEngines();
+}
+
+function deleteCustom(key, e) {
+    e.stopPropagation();
+    customEngines = customEngines.filter(e => e.key !== key);
+    localStorage.setItem('lb-custom-engines', JSON.stringify(customEngines));
+    if (selectedKey === key) selectedKey = 'duckduckgo';
+    renderEngines();
+}
+
+function saveEngine() {
+    localStorage.setItem('searchEngine', selectedKey);
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+renderEngines();
+</script>
