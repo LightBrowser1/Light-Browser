@@ -1,0 +1,257 @@
+/*
+File: mobile.css
+Author: {amar_avda}
+Copyright (c) 2026 {amar_avda}
+Licensed under the GNU General Public License v3.0
+*/
+
+/* ================================================================ */
+/* ANDROID BOTTOM BAR — always hidden on desktop                    */
+/* ================================================================ */
+
+.android-bottom-bar {
+    display: none; /* Hidden by default — android-bridge.js shows it */
+}
+
+/* ================================================================ */
+/* ANDROID MODE — triggered by android-bridge.js adding             */
+/* 'android-mode' class to <body>                                   */
+/* ================================================================ */
+
+body.android-mode {
+
+    /* ── Reset ───────────────────────────────────────────────────── */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Bottom bar height constant — used everywhere below */
+:root { --abb-height: 58px; }
+
+body.android-mode .browser-app {
+    flex-direction: column !important;
+    /* Full screen MINUS the bottom bar */
+    height: calc(100dvh - var(--abb-height)) !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+}
+
+/* ── HIDE desktop-only elements ─────────────────────────────────── */
+body.android-mode .sidebar           { display: none !important; }
+body.android-mode .tabs-outer-container { display: none !important; }
+
+/* ── TOP NAV (search bar) ───────────────────────────────────────── */
+body.android-mode .top-nav {
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    flex-shrink: 0 !important;
+    padding: 6px 10px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+body.android-mode .search-container {
+    gap: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+body.android-mode .search-bar {
+    padding: 8px 14px !important;
+    border-radius: 20px !important;
+    width: 100% !important;
+}
+
+body.android-mode .search-bar input { font-size: 14px !important; }
+body.android-mode .search-bar:focus-within { transform: none !important; }
+
+/* ── MAIN CONTENT ───────────────────────────────────────────────── */
+body.android-mode .main-content {
+    flex-grow: 1 !important;
+    width: 100% !important;
+    /* total height minus top-nav */
+    height: calc(100dvh - var(--abb-height) - 52px) !important;
+    max-height: calc(100dvh - var(--abb-height) - 52px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+/* ── MAIN WRAPPER (dashboard + webview placeholder) ─────────────── */
+body.android-mode .main-wrapper {
+    flex-grow: 1 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+}
+
+/* ── DASHBOARD ──────────────────────────────────────────────────── */
+body.android-mode .dashboard,
+body.android-mode #dashboard {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    padding: 20px 16px 16px !important;
+    justify-content: flex-start !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.android-mode .dashboard-content {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+body.android-mode .main-logo {
+    margin-bottom: 20px !important;
+    text-align: center !important;
+}
+body.android-mode .main-logo i { font-size: 44px !important; }
+body.android-mode .main-logo h1 { font-size: 1.4rem !important; letter-spacing: 3px !important; }
+
+body.android-mode .central-search {
+    padding: 4px 4px 4px 16px !important;
+    margin-bottom: 20px !important;
+    border-radius: 50px !important;
+}
+body.android-mode .central-search:focus-within { transform: none !important; }
+body.android-mode .central-search input { font-size: 15px !important; padding: 10px 0 !important; }
+body.android-mode .search-btn {
+    width: 44px !important; height: 44px !important;
+    touch-action: manipulation;
+}
+
+body.android-mode .quick-links {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+body.android-mode .link-card {
+    width: auto !important;
+    height: 72px !important;
+    border-radius: 12px !important;
+    touch-action: manipulation;
+}
+body.android-mode .link-card i    { font-size: 18px !important; margin-bottom: 5px !important; }
+body.android-mode .link-card span { font-size: 10px !important; }
+body.android-mode .link-card:hover  { transform: none !important; }
+body.android-mode .link-card:active { transform: scale(0.93) !important; }
+
+/* ── ANDROID WEBVIEW AREA ───────────────────────────────────────── */
+/*
+   The real Android WebView is rendered by Java ABOVE this layer.
+   This div acts as a CSS placeholder to reserve the right height.
+   Key: it must NOT be 100vh or it will hide behind the bottom bar.
+*/
+body.android-mode .android-webview-area {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important;
+    /* Height = main-wrapper height, which already excludes bottom bar */
+    height: 100% !important;
+    background: transparent !important;
+    z-index: 1 !important;
+}
+
+/* ── HIDE desktop iframe on Android ─────────────────────────────── */
+body.android-mode #content-frame { display: none !important; }
+
+/* ── ANDROID BOTTOM BAR ─────────────────────────────────────────── */
+body.android-mode .android-bottom-bar {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: var(--abb-height) !important;
+    /* Safe area for phones with home gesture bar */
+    padding-bottom: env(safe-area-inset-bottom) !important;
+
+    background: rgba(8, 8, 12, 0.97) !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+
+    align-items: center !important;
+    justify-content: space-around !important;
+    z-index: 99999 !important;
+    flex-shrink: 0 !important;
+}
+
+.abb-btn {
+    width: 52px;
+    height: 52px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.abb-btn:active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transform: scale(0.88);
+}
+
+.abb-btn:hover { color: #fff; }
+
+/* Home button — slightly more prominent */
+.abb-home {
+    color: rgba(255,255,255,0.6) !important;
+    font-size: 20px !important;
+}
+.abb-home:active {
+    background: rgba(0,212,255,0.12) !important;
+    color: #00d4ff !important;
+}
+
+/* ── ENGINE MENU on Android ─────────────────────────────────────── */
+body.android-mode #engine-menu {
+    left: 8px !important;
+    right: 8px !important;
+    transform: none !important;
+    width: auto !important;
+    min-width: unset !important;
+    /* Make sure it appears above the bottom bar */
+    bottom: calc(var(--abb-height) + 8px) !important;
+    top: auto !important;
+}
+
+/* ── Touch globals ───────────────────────────────────────────────── */
+body.android-mode button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ================================================================ */
+/* VERY SMALL PHONES — < 380px                                      */
+/* ================================================================ */
+@media (max-width: 380px) {
+    body.android-mode .quick-links {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    body.android-mode .main-logo h1 {
+        font-size: 1.2rem !important;
+        letter-spacing: 2px !important;
+    }
+    .abb-btn { width: 44px !important; height: 44px !important; font-size: 16px !important; }
+}
