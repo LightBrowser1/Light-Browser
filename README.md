@@ -28,12 +28,12 @@ In Phase 3, the focus shifted to core functionality, including the integration o
 If it looks like the project was finished very quickly on GitHub, it is because the entire development process was done locally on my computer. I spent a lot of time testing and fixing bugs before making the first public commit to ensure that the stable version works perfectly for everyone.
 
 ## OS Compatibility
-- [x] Windows (v0.0.1)
-- [ ] Android (In Development)
+- [x] Windows (v0.0.2)
+- [x] Android (v0.0.1)
 - [ ] Linux (Planned)
 
 ## Feedback & Bug Reports
-Since **Light Browser** is currently in **v0.0.1 Beta**, you might encounter some bugs.
+Since **Light Browser** is currently in **v0.0.2 Beta**, you might encounter some bugs.
 
 If you find a bug or have a suggestion, please:
 1. Go to the [Issues](../../issues) tab on this repository.
