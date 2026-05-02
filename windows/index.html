@@ -1,0 +1,447 @@
+<!--
+File: index.html
+Author: {amar_avda}
+Copyright (c) 2026 {amar_avda}
+Licensed under the GNU General Public License v3.0
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Browser</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="engine-menu.css">
+    <link rel="stylesheet" href="renderer.css">
+    <link rel="stylesheet" href="mobile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TITLE BAR — draggable, contains window controls
+     ══════════════════════════════════════════════════════════ -->
+<div class="title-bar" id="title-bar">
+    <div class="title-bar-drag"></div>
+    <div class="title-bar-controls">
+        <button class="tb-btn tb-minimize" onclick="window.electronAPI?.minimize()" title="Minimize">
+            <i class="fa-solid fa-minus"></i>
+        </button>
+        <button class="tb-btn tb-maximize" onclick="window.electronAPI?.maximize()" title="Maximize / Restore">
+            <i class="fa-solid fa-square" id="maximize-icon"></i>
+        </button>
+        <button class="tb-btn tb-close" onclick="window.electronAPI?.close()" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP
+     ══════════════════════════════════════════════════════════ -->
+<div class="browser-app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-feather-pointed" style="color:#00d4ff;font-size:24px;"></i>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" id="new-tab-btn" title="New Tab">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="nav-btn" title="Bookmarks">
+                <i class="fa-solid fa-bookmark"></i>
+            </button>
+            <button class="nav-btn" title="History">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </button>
+            <button class="nav-btn" title="Extensions" onclick="openExtensions()">
+                <i class="fa-solid fa-puzzle-piece"></i>
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button class="nav-btn" title="Resource Monitor" onclick="toggleResourceMonitor()">
+                <i class="fa-solid fa-microchip"></i>
+            </button>
+            <button class="nav-btn settings" title="Settings" onclick="openSettings()">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TAB BAR -->
+        <div class="tabs-outer-container">
+            <div class="tab-bar" id="tab-bar"></div>
+        </div>
+
+        <!-- TOP NAV (search bar + nav arrows) -->
+        <header class="top-nav">
+            <div class="search-container">
+                <div class="search-glow" id="search-glow"></div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="url-input" placeholder="Search or type URL...">
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA (dashboard + webview placeholder) -->
+        <div class="main-wrapper">
+
+            <!-- DASHBOARD -->
+            <div class="dashboard" id="dashboard">
+                <div class="dashboard-content">
+                    <div class="main-logo">
+                        <i class="fa-solid fa-feather-pointed" style="color:#00d4ff;font-size:60px;"></i>
+                        <h1>LIGHT<span>BROWSER</span></h1>
+                    </div>
+
+                    <div class="central-search">
+                        <div class="search-glow-big"></div>
+                        <input type="text" id="central-url-input" placeholder="Search the web securely...">
+                        <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+
+                    <div class="quick-links">
+                        <a href="https://github.com"  class="link-card"><i class="fa-brands fa-github"></i><span>GitHub</span></a>
+                        <a href="https://youtube.com" class="link-card"><i class="fa-brands fa-youtube"></i><span>YouTube</span></a>
+                        <a href="https://google.com"  class="link-card"><i class="fa-brands fa-google"></i><span>Google</span></a>
+                        <a href="#"                   class="link-card add-link"><i class="fa-solid fa-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OFFLINE PAGE (hidden by default) -->
+            <div class="offline-page" id="offline-page" style="display:none;">
+                <div class="offline-content">
+                    <div class="offline-icon">
+                        <i class="fa-solid fa-wifi"></i>
+                        <div class="offline-slash"></div>
+                    </div>
+                    <h2 class="offline-title">No Internet Connection</h2>
+                    <p class="offline-desc">Light Browser can't reach this page. Check your connection and try again.</p>
+                    <div class="offline-url" id="offline-url"></div>
+                    <div class="offline-actions">
+                        <button class="offline-btn primary" onclick="window.electronAPI?.reload()">
+                            <i class="fa-solid fa-rotate-right"></i> Try Again
+                        </button>
+                        <button class="offline-btn secondary" onclick="showDashboard()">
+                            <i class="fa-solid fa-house"></i> Go Home
+                        </button>
+                    </div>
+                    <div class="offline-tips">
+                        <p><i class="fa-solid fa-circle-info"></i> Check your Wi-Fi or cable connection</p>
+                        <p><i class="fa-solid fa-circle-info"></i> Try disabling VPN if you use one</p>
+                        <p><i class="fa-solid fa-circle-info"></i> Restart your router if the problem persists</p>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.main-wrapper -->
+
+    </main>
+</div><!-- /.browser-app -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESOURCE MONITOR PANEL (overlay)
+     ══════════════════════════════════════════════════════════ -->
+<div class="resource-monitor" id="resource-monitor" style="display:none;">
+    <div class="rm-header">
+        <span><i class="fa-solid fa-microchip"></i> Resource Monitor</span>
+        <button class="rm-close" onclick="toggleResourceMonitor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="rm-body" id="rm-body">
+        <div class="rm-loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading...</div>
+    </div>
+</div>
+
+<script src="renderer.js"></script>
+
+<style>
+/* ══════════════════════════════
+   TITLE BAR
+   ══════════════════════════════ */
+.title-bar {
+    height: 32px;
+    background: rgba(8, 8, 12, 0.98);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    -webkit-app-region: drag; /* Makes it draggable */
+    user-select: none;
+    z-index: 9999;
+    position: relative;
+}
+
+.title-bar-drag {
+    flex-grow: 1;
+    height: 100%;
+    -webkit-app-region: drag;
+}
+
+.title-bar-controls {
+    display: flex;
+    -webkit-app-region: no-drag;
+    height: 100%;
+}
+
+.tb-btn {
+    width: 46px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    -webkit-app-region: no-drag;
+}
+.tb-btn:hover         { background: rgba(255,255,255,0.08); color: #fff; }
+.tb-close:hover       { background: #e81123 !important; color: #fff !important; }
+.tb-maximize:hover    { background: rgba(255,255,255,0.08); }
+
+/* ══════════════════════════════
+   OFFLINE PAGE
+   ══════════════════════════════ */
+.offline-page {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #0d0d18 0%, #0a0a0c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.offline-content {
+    text-align: center;
+    max-width: 480px;
+    padding: 40px 20px;
+    animation: fadeInMain 0.4s ease;
+}
+
+.offline-icon {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 28px;
+}
+
+.offline-icon i {
+    font-size: 72px;
+    color: rgba(255,255,255,0.12);
+}
+
+.offline-slash {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 90px; height: 3px;
+    background: var(--accent-red, #ff0033);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(255,0,51,0.6);
+}
+
+.offline-title {
+    font-size: 24px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.offline-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.offline-url {
+    font-size: 12px;
+    color: #444;
+    font-family: monospace;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 28px;
+    word-break: break-all;
+    min-height: 32px;
+}
+
+.offline-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.offline-btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    border: none;
+}
+
+.offline-btn.primary {
+    background: var(--accent-red, #ff0033);
+    color: #fff;
+}
+.offline-btn.primary:hover  { background: #cc0029; box-shadow: 0 4px 20px rgba(255,0,51,0.4); }
+
+.offline-btn.secondary {
+    background: rgba(255,255,255,0.06);
+    color: #ccc;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.offline-btn.secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.offline-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+.offline-tips p {
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.offline-tips p i { color: #00d4ff; font-size: 11px; }
+
+/* ══════════════════════════════
+   RESOURCE MONITOR
+   ══════════════════════════════ */
+.resource-monitor {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 340px;
+    background: rgba(12, 12, 18, 0.97);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+    z-index: 9998;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    animation: menuPop 0.2s ease-out;
+}
+
+@keyframes menuPop {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.rm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+    color: #ccc;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.rm-header i { color: #00d4ff; margin-right: 6px; }
+
+.rm-close {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+.rm-close:hover { color: #ff4747; background: rgba(255,71,71,0.1); }
+
+.rm-body { padding: 14px 16px; }
+
+.rm-loading {
+    text-align: center;
+    color: #555;
+    font-size: 13px;
+    padding: 20px 0;
+}
+
+.rm-stat {
+    margin-bottom: 14px;
+}
+.rm-stat-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.rm-stat-val { color: #00d4ff; font-weight: 600; }
+
+.rm-bar-track {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.rm-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    background: linear-gradient(to right, #00d4ff, #0099cc);
+}
+.rm-bar-fill.warn  { background: linear-gradient(to right, #f59e0b, #d97706); }
+.rm-bar-fill.crit  { background: linear-gradient(to right, #ff4747, #cc0029); }
+
+.rm-process-list {
+    margin-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 12px;
+}
+.rm-process-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 8px;
+}
+.rm-process-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.rm-process-type { color: #888; }
+.rm-process-mem  { color: #00d4ff; font-size: 11px; }
+</style>
+
+</body>
+</html>

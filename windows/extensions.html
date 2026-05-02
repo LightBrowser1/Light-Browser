@@ -1,0 +1,279 @@
+<!--
+File: extensions.html
+Author: {amar_avda}
+Copyright (c) 2026 {amar_avda}
+Licensed under the GNU General Public License v3.0
+-->
+
+<style>
+.s-page { padding: 40px; max-width: 720px; }
+.s-title { font-size: 22px; font-weight: 300; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; }
+.s-title i { color: #00d4ff; }
+.s-sub { color: #555; font-size: 13px; margin-bottom: 36px; line-height: 1.6; }
+.s-section { margin-bottom: 36px; }
+.s-section-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 14px; }
+
+/* Extension cards */
+.ext-list { display: flex; flex-direction: column; gap: 10px; }
+
+.ext-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    transition: 0.2s;
+}
+.ext-card:hover { background: rgba(255,255,255,0.04); }
+.ext-card.builtin { border-color: rgba(0,212,255,0.12); background: rgba(0,212,255,0.04); }
+
+.ext-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.ext-icon.blue   { background: rgba(0,212,255,0.12); color: #00d4ff; }
+.ext-icon.red    { background: rgba(255,0,51,0.12);  color: #ff0033; }
+.ext-icon.green  { background: rgba(16,185,129,0.12);color: #10b981; }
+.ext-icon.purple { background: rgba(124,58,237,0.12);color: #7c3aed; }
+
+.ext-info { flex-grow: 1; }
+.ext-name { font-size: 14px; color: #ccc; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
+.ext-desc { font-size: 12px; color: #555; line-height: 1.5; }
+
+.ext-badge {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.badge-builtin { background: rgba(0,212,255,0.15); color: #00d4ff; }
+.badge-active  { background: rgba(16,185,129,0.15); color: #10b981; }
+
+.ext-toggle {
+    position: relative; width: 44px; height: 24px; flex-shrink: 0;
+}
+.ext-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.ext-track {
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.25s;
+}
+.ext-toggle input:checked + .ext-track { background: #00d4ff; }
+.ext-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: #fff; border-radius: 50%;
+    transition: transform 0.25s;
+    pointer-events: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.ext-toggle input:checked ~ .ext-thumb { transform: translateX(20px); }
+
+/* Chrome Web Store section */
+.store-banner {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+}
+.store-banner-icon { font-size: 40px; margin-bottom: 14px; color: #888; }
+.store-banner-title { font-size: 16px; color: #ccc; margin-bottom: 8px; }
+.store-banner-desc {
+    font-size: 13px; color: #555; line-height: 1.6;
+    margin-bottom: 20px; max-width: 460px; margin-left: auto; margin-right: auto;
+}
+
+.store-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #ccc; padding: 12px 24px;
+    border-radius: 10px; font-size: 14px;
+    cursor: pointer; transition: 0.2s;
+    text-decoration: none;
+}
+.store-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
+.store-btn i { color: #00d4ff; }
+
+.store-note {
+    font-size: 11px;
+    color: #444;
+    margin-top: 14px;
+    line-height: 1.6;
+}
+.store-note a { color: #00d4ff; text-decoration: none; }
+.store-note a:hover { text-decoration: underline; }
+</style>
+
+<div class="s-page">
+    <div class="s-title"><i class="fa-solid fa-puzzle-piece"></i> Extensions</div>
+    <p class="s-sub">
+        Manage built-in Light Browser protections and access Chrome-compatible extensions.
+        Built-in extensions are part of the browser and cannot be uninstalled.
+    </p>
+
+    <!-- Built-in extensions -->
+    <div class="s-section">
+        <div class="s-section-label">Built-in Protections</div>
+        <div class="ext-list">
+
+            <!-- Ad Blocker -->
+            <div class="ext-card builtin">
+                <div class="ext-icon red"><i class="fa-solid fa-ban"></i></div>
+                <div class="ext-info">
+                    <div class="ext-name">
+                        Light AdBlocker
+                        <span class="ext-badge badge-builtin">Built-in</span>
+                        <span class="ext-badge badge-active">Active</span>
+                    </div>
+                    <div class="ext-desc">
+                        Blocks ads, trackers, and malicious scripts at the network level before they load.
+                        Covers 50+ ad networks and YouTube pre-roll ads.
+                    </div>
+                </div>
+                <label class="ext-toggle">
+                    <input type="checkbox" id="ext-adblocker" checked onchange="saveExt('lb-ext-adblocker', this.checked)">
+                    <div class="ext-track"></div>
+                    <div class="ext-thumb"></div>
+                </label>
+            </div>
+
+            <!-- Fingerprinting Protection -->
+            <div class="ext-card builtin">
+                <div class="ext-icon purple"><i class="fa-solid fa-fingerprint"></i></div>
+                <div class="ext-info">
+                    <div class="ext-name">
+                        Fingerprint Shield
+                        <span class="ext-badge badge-builtin">Built-in</span>
+                        <span class="ext-badge badge-active">Active</span>
+                    </div>
+                    <div class="ext-desc">
+                        Spoofs browser fingerprint by normalizing User-Agent headers and removing
+                        Client Hints that leak hardware and OS info to websites.
+                    </div>
+                </div>
+                <label class="ext-toggle">
+                    <input type="checkbox" id="ext-fingerprint" checked onchange="saveExt('lb-ext-fingerprint', this.checked)">
+                    <div class="ext-track"></div>
+                    <div class="ext-thumb"></div>
+                </label>
+            </div>
+
+            <!-- Privacy Headers -->
+            <div class="ext-card builtin">
+                <div class="ext-icon blue"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="ext-info">
+                    <div class="ext-name">
+                        Privacy Headers
+                        <span class="ext-badge badge-builtin">Built-in</span>
+                        <span class="ext-badge badge-active">Active</span>
+                    </div>
+                    <div class="ext-desc">
+                        Automatically sends Do Not Track signals and removes Electron-specific
+                        headers that could identify Light Browser to websites.
+                    </div>
+                </div>
+                <label class="ext-toggle">
+                    <input type="checkbox" id="ext-privacy-headers" checked onchange="saveExt('lb-ext-privheaders', this.checked)">
+                    <div class="ext-track"></div>
+                    <div class="ext-thumb"></div>
+                </label>
+            </div>
+
+            <!-- HTTPS Upgrader -->
+            <div class="ext-card builtin">
+                <div class="ext-icon green"><i class="fa-solid fa-lock"></i></div>
+                <div class="ext-info">
+                    <div class="ext-name">
+                        HTTPS Upgrader
+                        <span class="ext-badge badge-builtin">Built-in</span>
+                    </div>
+                    <div class="ext-desc">
+                        Automatically upgrades HTTP connections to HTTPS when available,
+                        keeping your traffic encrypted.
+                    </div>
+                </div>
+                <label class="ext-toggle">
+                    <input type="checkbox" id="ext-https" onchange="saveExt('lb-httpsonly', this.checked)">
+                    <div class="ext-track"></div>
+                    <div class="ext-thumb"></div>
+                </label>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Chrome Web Store -->
+    <div class="s-section">
+        <div class="s-section-label">Chrome Extensions</div>
+        <div class="store-banner">
+            <div class="store-banner-icon">
+                <i class="fa-brands fa-chrome"></i>
+            </div>
+            <div class="store-banner-title">Chrome Web Store</div>
+            <div class="store-banner-desc">
+                Light Browser is built on Electron + Chromium, which means it's compatible with
+                many Chrome extensions. Browse the Chrome Web Store to find extensions —
+                installation support is coming in a future version.
+            </div>
+            <a class="store-btn" href="#" onclick="openChromeStore(); return false;">
+                <i class="fa-brands fa-chrome"></i>
+                Open Chrome Web Store
+            </a>
+            <div class="store-note">
+                ⚠️ Native Chrome extension installation (.crx) is planned for <strong>v0.0.3</strong>.<br>
+                For now, the store opens in a new browser tab for browsing.<br>
+                Follow updates at <a href="https://github.com/LightBrowser1/Light-Browser" target="_blank">github.com/LightBrowser1/Light-Browser</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function saveExt(key, val) {
+    localStorage.setItem(key, val);
+}
+
+function openChromeStore() {
+    // Open Chrome Web Store — when electronAPI is available it navigates in the browser
+    if (window.electronAPI && window.electronAPI.navigate) {
+        window.electronAPI.navigate('https://chrome.google.com/webstore/category/extensions');
+        window.history.back();
+    } else {
+        window.open('https://chrome.google.com/webstore/category/extensions', '_blank');
+    }
+}
+
+function init() {
+    const defaults = {
+        'lb-ext-adblocker':  true,
+        'lb-ext-fingerprint': true,
+        'lb-ext-privheaders': true,
+        'lb-httpsonly':       true,
+    };
+    const map = {
+        'ext-adblocker':       'lb-ext-adblocker',
+        'ext-fingerprint':     'lb-ext-fingerprint',
+        'ext-privacy-headers': 'lb-ext-privheaders',
+        'ext-https':           'lb-httpsonly',
+    };
+    Object.entries(map).forEach(([elId, key]) => {
+        const saved = localStorage.getItem(key);
+        const el    = document.getElementById(elId);
+        if (el) el.checked = saved !== null ? saved === 'true' : (defaults[key] || false);
+    });
+}
+
+init();
+</script>
